@@ -26,15 +26,3 @@ class ClearData(ResquestApi):
                                            product.get("stores"),
                                            product.get("url"),
                                            product.get("nutriscore_grade")]])
-"""
-
-category_pizzas = ClearData("fromages")
-category_pizzas.get_number_products()
-category_pizzas.calculate_number_page()
-category_pizzas.get_data_api()
-category_pizzas.generate_products_list()
-
-print(category_pizzas.products)
-print(len(category_pizzas.products))
-print(len(category_pizzas.data_category_json))
-"""

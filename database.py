@@ -14,7 +14,6 @@ class Database:
                                                 password=password,
                                                 database=database)
 
-
     def create_database(self, sql_script):
 
         cursor = self.mysql_connection.cursor()
@@ -36,7 +35,6 @@ class Database:
 
 
     def saved_category(self):
-        
         cursor = self.mysql_connection.cursor()
         for element in config.CATEGORIES:
             cursor.execute(f"""INSERT INTO category (name) VALUES ("{element}")""")
