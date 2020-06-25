@@ -9,7 +9,10 @@ import config
 class Application:
 
     def __init__(self):
-        self.mysql = Database("localhost", "cyril", "qsdf678/", "p5" )
+        self.mysql = Database(config.SERVER_ADRESS, 
+                            config.SERVER_USER_NAME, 
+                            config.SERVER_PASSWORD, 
+                            config.SERVER_DATABASE)
         self.category = ""
         self.products = []
         self.products_sub = []
@@ -28,13 +31,18 @@ class Application:
             category = ClearData(element)
             category.get_data_api()
             category.generate_products_list()
-            self.mysql.saved_product(category.products, config.CATEGORIES.index(element)+1)
+            self.mysql.saved_product(category.products,
+                                     config.CATEGORIES.index(element)+1)
 
     def main_menu(self):
         leave_main_menu = 1
         while leave_main_menu :
-            print("\n 1 : Choisir une catégorie. \n 2 : Afficher les substituts. \n 3 : Réinitialiser BDD. \n 4 : Quitter le programme.")
+            print("\n 1 : Choisir une catégorie. "
+                  "\n 2 : Afficher les substituts. "
+                  "\n 3 : Réinitialiser BDD. "
+                  "\n 4 : Quitter le programme.")
             choice = input("\n Veuillez saisir votre choix : ")
+
             if choice == "1" :
                 self.category_choice()
             elif choice == "2" :
@@ -42,8 +50,12 @@ class Application:
                 for element in self.mysql.get_substitution():
                     for substitution in element:
                         test = self.mysql.get_product(substitution)
-                        print(test[0][1]+" - "+test[0][2]+" - "+test[0][3]+" - "+test[0][4])
-                    print("     ")
+                        print(test[0][1]+" - "
+                              +test[0][2]+" - "
+                              +test[0][3]+" - "
+                              +test[0][4])
+                    print("\n")
+
             elif choice == "3" :
                 self.initialise_bdd()
                 self.saved_product_bdd()
@@ -55,7 +67,8 @@ class Application:
         while leave:
             print("\n Catégories :\n")
             for element in config.CATEGORIES:
-                    print(str(config.CATEGORIES.index(element)+1)+" : "+element)
+                    print(str(config.CATEGORIES.index(element)+1)
+                              +" : "+element)
             try:        
                 self.category =  input("\n Veuillez saisir votre choix : ")
                 if self.category == "q":
@@ -64,13 +77,13 @@ class Application:
                     print(self.category)
                     self.products = self.mysql.get_list_product(self.category)
                     self.products_sub = self.mysql.get_list_product(self.category)
-                    self.choise_product()
+                    self.choice_product()
                     leave -= 1
             except :
                 print("\n Saisie incorrecte")    
 
 
-    def choise_product(self):
+    def choice_product(self):
         first_number = 0
         leave = 1
         while leave:
@@ -89,12 +102,12 @@ class Application:
                 elif 1 <= int(input_produit) <= len(self.products): 
                     self.product_selected = self.products[int(input_produit)-1][0]
                     del self.products_sub[int(input_produit)-1]
-                    self.choise_sub()
+                    self.choice_sub()
                     leave -=1
             except:
                 print("Saisie incorrecte")    
 
-    def choise_sub(self):
+    def choice_sub(self):
         first_number1 = 0
         leave = 1
         while leave:

@@ -12,3 +12,15 @@ CATEGORIES = ["Snacks", "Boissons", "Epicerie", "Sauces", "Desserts"]
 
 #number of products per page
 NUMBER_PRODUCT_DISPLAY = 15
+
+#mysql server adress
+SERVER_ADRESS = "localhost"
+
+#mysql user name
+SERVER_USER_NAME = "cyril"
+
+#mysql password
+SERVER_PASSWORD = "qsdf678/"
+
+#mysql data base
+SERVER_DATABASE = "p5"
