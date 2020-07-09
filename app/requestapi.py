@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: Utf-8 -*
 
-
-import config
-import requests
+import lang.fr as fr
+from config import config
 import math
+import requests
 
 
 class ResquestApi:
-    """Download data from open food facts.
+    """This class is used to download data from open food facts.
     This class downloads data from the website open food facts using the API.
     Multiple requests are sent until the maximum number entered
     or the number of products is expected.
@@ -28,7 +28,6 @@ class ResquestApi:
         number_product_category = requests.get(
             f"https://fr.openfoodfacts.org/categorie/{self.category}.json")
         number_product_category_json = number_product_category.json()
-        #self.number_products = int(number_product_category_json["count"])
         return int(number_product_category_json["count"])
 
     def _calculate_number_page(self):
@@ -42,16 +41,23 @@ class ResquestApi:
     def get_data_api(self):
         """method to get data produts"""
         number_page = self._calculate_number_page()
-
         while number_page:
-            print(f"Téléchargement de {self.results_page} produits {self.category} "
-                  f"(requête {(self.number_page-number_page+1)}/{self.number_page}) ...")
-
+            print(f"Téléchargement de {self.results_page} "
+                  f"produits {self.category} "
+                  f"(requête {(self.number_page-number_page+1)}"
+                  f"/{self.number_page}) ...")
             data_category = requests.get(
                 f"https://fr.openfoodfacts.org/cgi/search.pl?action=process"
                 f"&tagtype_0=categories&tag_contains_0=contains&"
                 f"tag_0={self.category}&page_size={self.results_page}"
                 f"&page={number_page}&json=1")
 
+            if data_category.status_code == 200:
+                print(fr.FR[16])
+            elif data_category.status_code == 400 or \
+                    data_category.status_code == 500:
+                print(fr.FR[17])
+            else:
+                print(fr.FR[18], data_category.status_code)
             self.data_category_json.append(data_category.json())
             number_page -= 1

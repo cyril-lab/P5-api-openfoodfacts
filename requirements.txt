@@ -1,1 +1,2 @@
-python3-mysql.connector==8.0.20
+mysql-connector-python==8.0.20
+requests==2.24.0

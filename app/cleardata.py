@@ -1,12 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: Utf-8 -*
 
-import config
-from requestapi import ResquestApi
+from app.requestapi import ResquestApi
 
 
 class ClearData(ResquestApi):
-    """This class converts the retrieved data."""
+    """This class converts the retrieved data"""
 
     def __init__(self, category):
         ResquestApi.__init__(self, category)
@@ -21,7 +20,6 @@ class ClearData(ResquestApi):
                         and product.get("url") \
                         and product.get("nutriscore_grade") is not None \
                         and len(self.products) < self.number_products_max:
-
                     self.products.extend([[product.get("product_name_fr"),
                                            product.get("stores"),
                                            product.get("url"),
