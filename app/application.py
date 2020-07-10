@@ -107,7 +107,7 @@ class Application:
             pass
 
     def display_product(self, list_products):
-        """Method to display the different choices in the products menu"""
+        """Method to display products"""
         for element in list_products[self.first_number:self.first_number +
                                      config.NUMBER_PRODUCT_DISPLAY]:
             print(str(list_products.index(element) + 1)
@@ -115,6 +115,7 @@ class Application:
                   + " - " + element[2] + " - " + element[3])
 
     def choice_product(self):
+        """Method to display the different choices in the products menu"""
         self.first_number = 0
         self.leave_choice_product = 1
         while self.leave_choice_product:
