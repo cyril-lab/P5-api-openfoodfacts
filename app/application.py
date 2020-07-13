@@ -27,7 +27,7 @@ class Application:
         self.leave_category_choice = 1
         self.leave_choice_product = 1
         self.leave_choice_sub = 1
-        self.leave_saved_sub = 1
+        self.leave_save_sub = 1
         self.first_number = 0
         self.choice_menu = ""
         self.input_product = ""
@@ -42,16 +42,16 @@ class Application:
         print(fr.FR[1])
         self.mysql.create_database("sql/p5.sql")
         print(fr.FR[2])
-        self.mysql.saved_category()
+        self.mysql.save_category()
         print(fr.FR[3])
 
-    def saved_product_bdd(self):
+    def save_product_bdd(self):
         """Method to retrieve the products and save them in the database"""
         for element in config.CATEGORIES:
             category = ClearData(element)
             category.get_data_api()
             category.generate_products_list()
-            self.mysql.saved_product(category.products,
+            self.mysql.save_product(category.products,
                                      config.CATEGORIES.index(element)+1)
 
     def main_menu(self):
@@ -69,15 +69,15 @@ class Application:
             print(fr.FR[9])
             for element in self.mysql.get_substitution():
                 for substitution in element:
-                    test = self.mysql.get_product(substitution)
-                    print(test[0][1] + " - "
-                          + test[0][2] + " - "
-                          + test[0][3] + " - "
-                          + test[0][4])
+                    sub_prod = self.mysql.get_product(substitution)
+                    print(sub_prod[0][1] + " - "
+                          + sub_prod[0][2] + " - "
+                          + sub_prod[0][3] + " - "
+                          + sub_prod[0][4])
                 print("\n")
         elif self.choice_menu == "3":
             self.initialise_bdd()
-            self.saved_product_bdd()
+            self.save_product_bdd()
         elif self.choice_menu == "4":
             self.leave_main_menu -= 1
 
@@ -159,35 +159,35 @@ class Application:
         if self.input_product_sub == "s" and (self.first_number +
                                               config.NUMBER_PRODUCT_DISPLAY) \
                 < len(self.products_sub):
-            self.first_number += 5
+            self.first_number += config.NUMBER_PRODUCT_DISPLAY
         elif self.input_product_sub == "p" and self.first_number > 0:
-            self.first_number -= 5
+            self.first_number -= config.NUMBER_PRODUCT_DISPLAY
         elif self.input_product_sub == "q":
             self.leave_choice_sub -= 1
         try:
             if 1 <= int(self.input_product_sub) <= len(self.products_sub):
                 self.prod_sub = self.products_sub[int(self.input_product_sub)
                                                   - 1][0]
-                self.saved_sub()
+                self.save_sub()
                 self.leave_choice_sub -= 1
         except ValueError:
             pass
 
-    def saved_sub(self):
+    def save_sub(self):
         """Method to ask to the user if he wants to register the substitute"""
-        self.leave_saved_sub = 1
-        while self.leave_saved_sub:
+        self.leave_save_sub = 1
+        while self.leave_save_sub:
             print(fr.FR[14])
             self.product_sub = input("y / n : ")
-            self.saved_sub_input()
+            self.save_sub_input()
 
-    def saved_sub_input(self):
+    def save_sub_input(self):
         """Method to manage entries for saved or not the substitute"""
         if self.product_sub == "y":
-            self.mysql.saved_product_substitute(self.product_selected,
+            self.mysql.save_product_substitute(self.product_selected,
                                                 self.prod_sub)
-            self.leave_saved_sub -= 1
+            self.leave_save_sub -= 1
         elif self.product_sub == "n":
-            self.leave_saved_sub -= 1
+            self.leave_save_sub -= 1
         elif self.product_sub == "q":
-            self.leave_saved_sub -= 1
+            self.leave_save_sub -= 1

@@ -7,7 +7,7 @@ import math
 import requests
 
 
-class ResquestApi:
+class RequestApi:
     """This class is used to download data from open food facts.
     This class downloads data from the website open food facts using the API.
     Multiple requests are sent until the maximum number entered

@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: Utf-8 -*
 
-from app.requestapi import ResquestApi
+from app.requestapi import RequestApi
 
 
-class ClearData(ResquestApi):
+class ClearData(RequestApi):
     """This class converts the retrieved data"""
 
     def __init__(self, category):
-        ResquestApi.__init__(self, category)
+        RequestApi.__init__(self, category)
         self.products = []
 
     def generate_products_list(self):

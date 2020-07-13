@@ -32,14 +32,14 @@ class Database:
                     print("Command skipped: ", exception)
         self.mysql_connection.commit()
 
-    def saved_category(self):
+    def save_category(self):
         """Method to save the categories in the database"""
         for element in config.CATEGORIES:
             self.cursor.execute(f"""
                 INSERT INTO category (name) VALUES ("{element}")""")
         self.mysql_connection.commit()
 
-    def saved_product(self, list_product, number_category):
+    def save_product(self, list_product, number_category):
         """Method to save the products in the database"""
         product_list = sorted(list_product, key=lambda colonnes: colonnes[3])
         for element in product_list:
@@ -51,7 +51,7 @@ class Database:
             """)
         self.mysql_connection.commit()
 
-    def saved_product_substitute(self, id_product, id_product_substitution):
+    def save_product_substitute(self, id_product, id_product_substitution):
         """Method to save the substitute products in the database"""
         try:
             self.cursor.execute(f"""
@@ -67,8 +67,8 @@ class Database:
         self.cursor.execute(f"""
             SELECT * FROM product
             WHERE Category_id = {category_number} ORDER BY id""")
-        tup = self.cursor.fetchall()
-        return tup
+        list_product = self.cursor.fetchall()
+        return list_product
 
     def get_substitution(self):
         """Method to retrieve substitute products from the database"""
