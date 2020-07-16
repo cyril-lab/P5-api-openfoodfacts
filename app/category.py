@@ -10,11 +10,9 @@ class Category(Database):
 
     def save_category(self):
         """Method to save the categories in the database"""
-        self.get_connection()
-        self.create_cursor()
+        self.start_connection()
         for element in config.CATEGORIES:
             self.cursor.execute(f"""
                 INSERT INTO category (name) VALUES ("{element}")""")
         self.mysql_connection.commit()
-        self.close_cursor()
         self.close_connection()

@@ -20,8 +20,7 @@ class Database:
 
     def create_database(self, sql_script):
         """Method to create the database tables"""
-        self.get_connection()
-        self.create_cursor()
+        self.start_connection()
         with open(sql_script, "r") as sql_script:
             read_file = sql_script.read()
             sql_commands = read_file.split(';')
@@ -32,20 +31,15 @@ class Database:
                 except IOError as exception:
                     print("Command skipped: ", exception)
         self.mysql_connection.commit()
-        self.close_cursor()
         self.close_connection()
 
-    def get_connection(self):
+    def start_connection(self):
         self.mysql_connection = mysql.connector.connect(host=self.host,
                                                         user=self.user,
                                                         password=self.password,
                                                         database=self.database)
-
-    def create_cursor(self):
         self.cursor = self.mysql_connection.cursor()
 
-    def close_cursor(self):
-        self.cursor.close()
-
     def close_connection(self):
+        self.cursor.close()
         self.mysql_connection.close()
