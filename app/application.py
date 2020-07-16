@@ -3,6 +3,9 @@
 
 from app.cleardata import ClearData
 from app.database import Database
+from app.category import Category
+from app.product import Product
+from app.substitution import Substitution
 from config import config
 import lang.fr as fr
 
@@ -14,10 +17,6 @@ class Application:
     """
 
     def __init__(self):
-        self.mysql = Database(config.SERVER_ADRESS,
-                              config.SERVER_USER_NAME,
-                              config.SERVER_PASSWORD,
-                              config.SERVER_DATABASE)
         self.category = ""
         self.products = []
         self.products_sub = []
@@ -33,16 +32,17 @@ class Application:
         self.input_product = ""
         self.product_sub = ""
         self.input_product_sub = ""
-
-    def main(self):
-        self.main_menu()
+        self.base = Database()
+        self.category_table = Category()
+        self.product_table = Product()
+        self.substitution_table = Substitution()
 
     def initialise_bdd(self):
         """Method to reset database and save categories"""
         print(fr.FR[1])
-        self.mysql.create_database("sql/p5.sql")
+        self.base.create_database("sql/p5.sql")
         print(fr.FR[2])
-        self.mysql.save_category()
+        self.category_table.save_category()
         print(fr.FR[3])
 
     def save_product_bdd(self):
@@ -51,10 +51,11 @@ class Application:
             category = ClearData(element)
             category.get_data_api()
             category.generate_products_list()
-            self.mysql.save_product(category.products,
-                                     config.CATEGORIES.index(element)+1)
+            self.product_table.save_product(
+                category.products,
+                config.CATEGORIES.index(element)+1)
 
-    def main_menu(self):
+    def main(self):
         """Method to display the different choices of the main menu"""
         while self.leave_main_menu:
             print(fr.FR[4], fr.FR[5], fr.FR[6], fr.FR[7])
@@ -67,9 +68,9 @@ class Application:
             self.category_choice()
         elif self.choice_menu == "2":
             print(fr.FR[9])
-            for element in self.mysql.get_substitution():
+            for element in self.substitution_table.get_substitution():
                 for substitution in element:
-                    sub_prod = self.mysql.get_product(substitution)
+                    sub_prod = self.product_table.get_product(substitution)
                     print(sub_prod[0][1] + " - "
                           + sub_prod[0][2] + " - "
                           + sub_prod[0][3] + " - "
@@ -94,17 +95,19 @@ class Application:
     def category_choice_input(self):
         """Method to manage entries in the categories menu"""
         self.category = input(fr.FR[8])
-        if self.category == "q":
-            self.leave_category_choice -= 1
         try:
-            if 1 <= int(self.category) <= len(config.CATEGORIES):
+            if self.category == "q":
+                self.leave_category_choice -= 1
+            elif 1 <= int(self.category) <= len(config.CATEGORIES):
                 print(self.category)
-                self.products = self.mysql.get_list_product(self.category)
-                self.products_sub = self.mysql.get_list_product(self.category)
+                self.products = self.product_table.get_list_product(
+                                self.category)
+                self.products_sub = self.product_table.get_list_product(
+                                self.category)
                 self.choice_product()
                 self.leave_category_choice -= 1
         except ValueError:
-            pass
+            print(fr.FR[10])
 
     def display_product(self, list_products):
         """Method to display products"""
@@ -126,23 +129,23 @@ class Application:
 
     def choice_product_input(self):
         """Method to manage entries in the products menu"""
-        if self.input_product == "s" and (
-                self.first_number + config.NUMBER_PRODUCT_DISPLAY)\
-                < len(self.products):
-            self.first_number += config.NUMBER_PRODUCT_DISPLAY
-        elif self.input_product == "p" and self.first_number > 0:
-            self.first_number -= config.NUMBER_PRODUCT_DISPLAY
-        elif self.input_product == "q":
-            self.leave_choice_product -= 1
         try:
-            if 1 <= int(self.input_product) <= len(self.products):
+            if self.input_product == "s" and (
+                    self.first_number + config.NUMBER_PRODUCT_DISPLAY)\
+                    < len(self.products):
+                self.first_number += config.NUMBER_PRODUCT_DISPLAY
+            elif self.input_product == "p" and self.first_number > 0:
+                self.first_number -= config.NUMBER_PRODUCT_DISPLAY
+            elif self.input_product == "q":
+                self.leave_choice_product -= 1
+            elif 1 <= int(self.input_product) <= len(self.products):
                 self.product_selected = self.products[int(self.input_product)
                                                       - 1][0]
                 del self.products_sub[int(self.input_product)-1]
                 self.choice_sub()
                 self.leave_choice_product -= 1
         except ValueError:
-            pass
+            print(fr.FR[10])
 
     def choice_sub(self):
         """Method to display the different choices in the substitute menu"""
@@ -156,22 +159,22 @@ class Application:
 
     def choice_sub_input(self):
         """Method to manage entries in the substitute products menu"""
-        if self.input_product_sub == "s" and (self.first_number +
-                                              config.NUMBER_PRODUCT_DISPLAY) \
-                < len(self.products_sub):
-            self.first_number += config.NUMBER_PRODUCT_DISPLAY
-        elif self.input_product_sub == "p" and self.first_number > 0:
-            self.first_number -= config.NUMBER_PRODUCT_DISPLAY
-        elif self.input_product_sub == "q":
-            self.leave_choice_sub -= 1
         try:
-            if 1 <= int(self.input_product_sub) <= len(self.products_sub):
+            if self.input_product_sub == "s" and (
+                self.first_number + config.NUMBER_PRODUCT_DISPLAY) \
+                    < len(self.products_sub):
+                self.first_number += config.NUMBER_PRODUCT_DISPLAY
+            elif self.input_product_sub == "p" and self.first_number > 0:
+                self.first_number -= config.NUMBER_PRODUCT_DISPLAY
+            elif self.input_product_sub == "q":
+                self.leave_choice_sub -= 1
+            elif 1 <= int(self.input_product_sub) <= len(self.products_sub):
                 self.prod_sub = self.products_sub[int(self.input_product_sub)
                                                   - 1][0]
                 self.save_sub()
                 self.leave_choice_sub -= 1
         except ValueError:
-            pass
+            print(fr.FR[10])
 
     def save_sub(self):
         """Method to ask to the user if he wants to register the substitute"""
@@ -184,8 +187,8 @@ class Application:
     def save_sub_input(self):
         """Method to manage entries for saved or not the substitute"""
         if self.product_sub == "y":
-            self.mysql.save_product_substitute(self.product_selected,
-                                                self.prod_sub)
+            self.substitution_table.save_product_substitute(
+                self.product_selected, self.prod_sub)
             self.leave_save_sub -= 1
         elif self.product_sub == "n":
             self.leave_save_sub -= 1
