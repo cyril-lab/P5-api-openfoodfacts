@@ -34,6 +34,7 @@ class Database:
         self.close_connection()
 
     def start_connection(self):
+        """Method to start connection with MySQL"""
         self.mysql_connection = mysql.connector.connect(host=self.host,
                                                         user=self.user,
                                                         password=self.password,
@@ -41,5 +42,6 @@ class Database:
         self.cursor = self.mysql_connection.cursor()
 
     def close_connection(self):
+        """Method to close connection with MySQL"""
         self.cursor.close()
         self.mysql_connection.close()
