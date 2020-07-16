@@ -10,7 +10,6 @@ class Substitution(Database):
 
     def save_product_substitute(self, id_product, id_product_substitution):
         """Method to save the substitute products in the database"""
-
         try:
             self.start_connection()
             self.cursor.execute(f"""
